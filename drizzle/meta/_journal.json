@@ -1,13 +1,13 @@
 {
-  "version": "7",
-  "dialect": "sqlite",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1721598167778,
-      "tag": "0000_shallow_lilith",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "sqlite",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "6",
+			"when": 1721598167778,
+			"tag": "0000_shallow_lilith",
+			"breakpoints": true
+		}
+	]
 }
