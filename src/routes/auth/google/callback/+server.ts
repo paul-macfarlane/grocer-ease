@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	} catch (error) {
 		console.error(error);
 
-		return new Response('authentication failed', { status: 500 });
+		return new Response('Authentication failed', { status: 500 });
 	}
 
 	redirect(302, '/');
