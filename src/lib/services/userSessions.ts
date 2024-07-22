@@ -81,3 +81,17 @@ export async function deleteUserSession(sessionId: string, cookies: Cookies): Pr
 
 	await db.delete(userSessions).where(eq(userSessions.id, sessionId));
 }
+
+export async function getUserFromSession(cookies: Cookies): Promise<User | null> {
+	const userSession = await getUserSession(cookies);
+	if (!userSession) {
+		return null;
+	}
+
+	const userRes = await db.select().from(users).where(eq(users.id, userSession.userId));
+	if (!userRes.length) {
+		return null;
+	}
+
+	return userRes[0];
+}
