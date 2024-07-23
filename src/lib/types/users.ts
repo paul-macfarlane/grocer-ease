@@ -17,3 +17,7 @@ export type GoogleUser = {
 	family_name: string;
 	picture: string;
 };
+
+export type UpdateUser = {
+	username: string;
+};
