@@ -1,9 +1,9 @@
-# grocery-list
+# grocer-ease
 
 ## Summary
 
-The purpose of this app is to make grocery for me and my girlfriend easier. This is a successor to https://github.com/paul-macfarlane/grocery-list, which was working fine but I wanted to stop rolling my own UI components and decided to
-re-architect the app a bit to better support collaboration on lists.
+The purpose of this app is to make grocery shopping for me and my girlfriend easier. This is a successor to https://github.com/paul-macfarlane/grocery-list, which was working fine but I wanted to stop rolling my own UI components and decided to
+re-architect the app a bit to better support collaboration on lists and make the code for the main grocery list form easier to maintain.
 
 ## Feature List
 
@@ -46,7 +46,7 @@ re-architect the app a bit to better support collaboration on lists.
 
 This app is built using [Node.js](https://nodejs.org/en), [SvelteKit](https://kit.svelte.dev/) (with release candidate for [Svelte 5](https://svelte.dev/blog/svelte-5-release-candidate)), [Drizzle ORM](https://orm.drizzle.team/), and [Turso](https://turso.tech/).
 
-1. Set up Google OAuth 2.0 https://developers.google.com/identity/protocols/oauth for this app using the local host url http://localhost:5173/auth/google/callback as a redirect URI, obtain credentials, and set them as env vars in `.env`.
+1. Set up Google OAuth 2.0 https://developers.google.com/identity/protocols/oauth for this app using the local host url http://localhost:5173/auth/google/callback as a redirect URI, obtain credentials, and set them as env vars in `.env`
 2. [Install Turso CLI](https://docs.turso.tech/cli/introduction)
 3. Create a local db file using `turso dev --db-file local.db` (keep the process running)
 4. Copy `env.example` to `.env` - `cp .env.example .env` and fill in values as needed

@@ -1,5 +1,7 @@
 import { db } from '$lib/db/client';
 import { users } from '$lib/db/schema';
+import { NotFoundError } from '$lib/types/errors';
+import type { UpdateUser, User } from '$lib/types/users';
 import { eq } from 'drizzle-orm';
 
 const adjectives = [
@@ -81,4 +83,19 @@ export async function generateUniqueUsername(): Promise<string> {
 	}
 
 	return username;
+}
+
+export async function updateUser(userId: string, update: UpdateUser): Promise<User> {
+	const userRes = await db
+		.update(users)
+		.set({
+			username: update.username
+		})
+		.where(eq(users.id, userId))
+		.returning();
+	if (!userRes.length) {
+		throw new NotFoundError('user');
+	}
+
+	return userRes[0];
 }
