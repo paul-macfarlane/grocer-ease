@@ -11,9 +11,9 @@ re-architect the app a bit to better support collaboration on lists and make the
   - [x] users can log in with social accounts
     - [x] add protected routes, add sign out, get session info in request
     - [x] add cleaner styling for login and root page
-- [ ] profile management
+- [x] profile management
   - [x] users start of with automatically generated usernames
-  - [ ] users can edit their usernames
+  - [x] users can edit their usernames
 - [ ] creating/editing a grocery list
   - [ ] items can be created, edited, and deleted and include name, quantity, notes, and link. Only name is required
   - [ ] lists can have budgets
