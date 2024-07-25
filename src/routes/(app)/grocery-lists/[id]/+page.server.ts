@@ -11,10 +11,8 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
 	}
 
 	try {
-		const groceryList = await getGroceryListById(user.id, params.id);
-
 		return {
-			groceryList
+			groceryList: await getGroceryListById(user.id, params.id)
 		};
 	} catch (e: unknown) {
 		if (e instanceof APIError) {
