@@ -2,7 +2,7 @@ import type { UpdateUser } from '$lib/types/users';
 import { z } from 'zod';
 
 export type UpdateUserValidationErrors = {
-	username: string;
+	username?: string;
 };
 
 type ParseUpdateUserFormRes = {
@@ -17,7 +17,7 @@ export function parseUpdateUserForm(form: FormData): ParseUpdateUserFormRes {
 		.string({ message: 'must be a string' })
 		.min(8, 'must be at least 8 characters')
 		.max(20, 'cannot be more than 20 characters')
-		.safeParse(form.get('username'));
+		.safeParse(form.get('username')?.toString().trim());
 	if (usernameRes.data) {
 		response.data = {
 			username: usernameRes.data
