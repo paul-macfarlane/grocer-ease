@@ -1,4 +1,4 @@
-import { text, integer, sqliteTable } from 'drizzle-orm/sqlite-core';
+import { text, integer, sqliteTable, real } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 export const userSessions = sqliteTable('user_sessions', {
@@ -22,6 +22,24 @@ export const users = sqliteTable('users', {
 	firstName: text('first_name', { length: 256 }).notNull(),
 	lastName: text('last_name', { length: 256 }).notNull(),
 	profilePicUrl: text('profile_pic_url', { length: 256 }).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	updatedAt: integer('updated_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`(unixepoch())`)
+		.$onUpdate(() => new Date())
+});
+
+export const groceryLists = sqliteTable('grocery_lists', {
+	id: text('id', { length: 36 })
+		.primaryKey()
+		.$default(() => crypto.randomUUID()),
+	createdByUserId: text('created_by_user_id', { length: 256 })
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	title: text('title', { length: 256 }).notNull(),
+	budget: real('budget'),
 	createdAt: integer('created_at', { mode: 'timestamp' })
 		.notNull()
 		.default(sql`(unixepoch())`),
