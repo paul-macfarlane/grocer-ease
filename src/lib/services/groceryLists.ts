@@ -37,3 +37,7 @@ export async function getGroceryListById(
 
 	return groceryListRes[0];
 }
+
+export async function getGroceryLists(userId: string): Promise<GroceryList[]> {
+	return db.select().from(groceryLists).where(eq(groceryLists.createdByUserId, userId));
+}

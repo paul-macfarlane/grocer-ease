@@ -2,11 +2,14 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import addSvg from '$lib/assets/add.svg';
+	import editSvg from '$lib/assets/edit.svg';
 	import {
 		parseCreateGroceryListForm,
 		type ParseCreateGroceryListFormErrors
 	} from '$lib/validators/groceryLists';
 	import type { SubmitFunction } from './grocery-lists/$types';
+
+	let { data } = $props();
 
 	let newListFormValidationErrors: ParseCreateGroceryListFormErrors | undefined = $state(undefined);
 	let newListFormSubmitError: string | undefined = $state(undefined);
@@ -62,6 +65,31 @@
 			><img alt="add grocery list" src={addSvg} /></button
 		>
 	</div>
+
+	<ul class="space-y-4">
+		{#each data.groceryLists as groceryList (groceryList.id)}
+			<li class="card bg-primary text-primary-content w-96">
+				<div class="card-body">
+					<h2 class="card-title">{groceryList.title}</h2>
+					<p>[TODO REPLACE WITH ITEM COUNT] items</p>
+					<p class="text-sm">
+						Last updated:
+						{#if groceryList.updatedAt.toDateString() === new Date().toDateString()}
+							Today
+						{:else}
+							{groceryList.updatedAt.toLocaleDateString()}
+						{/if}
+						{groceryList.updatedAt.toLocaleTimeString()}
+					</p>
+					<div class="card-actions justify-end">
+						<a href={`/grocery-lists/${groceryList.id}`} class="btn btn-sm btn-square">
+							<img alt="edit grocery list" src={editSvg} />
+						</a>
+					</div>
+				</div>
+			</li>
+		{/each}
+	</ul>
 </main>
 
 <dialog bind:this={newListDialog} class="modal">
