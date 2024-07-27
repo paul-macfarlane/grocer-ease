@@ -2,7 +2,7 @@ import { db } from '$lib/db/client';
 import { groceryLists } from '$lib/db/schema';
 import { APIError, ForbiddenError, NotFoundError } from '$lib/types/errors';
 import type { CreateGroceryList, GroceryList } from '$lib/types/groceryLists';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 export async function createGroceryList(
 	userId: string,
@@ -40,4 +40,10 @@ export async function getGroceryListById(
 
 export async function getGroceryLists(userId: string): Promise<GroceryList[]> {
 	return db.select().from(groceryLists).where(eq(groceryLists.createdByUserId, userId));
+}
+
+export async function deleteGroceryList(userId: string, groceryListId: string): Promise<void> {
+	await db
+		.delete(groceryLists)
+		.where(and(eq(groceryLists.id, groceryListId), eq(groceryLists.createdByUserId, userId)));
 }

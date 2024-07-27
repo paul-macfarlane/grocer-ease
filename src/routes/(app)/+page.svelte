@@ -1,18 +1,23 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import addSvg from '$lib/assets/add.svg';
 	import editSvg from '$lib/assets/edit.svg';
+	import deleteSvg from '$lib/assets/delete.svg';
 	import {
 		parseCreateGroceryListForm,
 		type ParseCreateGroceryListFormErrors
 	} from '$lib/validators/groceryLists';
 	import type { SubmitFunction } from './grocery-lists/$types';
+	import type { SubmitFunction as DeleteSubmitFunction } from './grocery-lists/[id]/$types';
+	import { page } from '$app/stores';
+	import { fade } from 'svelte/transition';
 
 	let { data } = $props();
 
 	let newListFormValidationErrors: ParseCreateGroceryListFormErrors | undefined = $state(undefined);
 	let newListFormSubmitError: string | undefined = $state(undefined);
+	let toastErrorMessage: string | undefined = $state(undefined);
 
 	let newListDialog: HTMLDialogElement;
 	function openNewListModal() {
@@ -30,7 +35,7 @@
 			switch (result.type) {
 				case 'redirect':
 					newListFormValidationErrors = undefined;
-					newListFormSubmitError = '';
+					newListFormSubmitError = undefined;
 					goto(result.location);
 					break;
 
@@ -41,17 +46,52 @@
 
 				case 'success':
 					newListFormValidationErrors = undefined;
-					newListFormSubmitError = '';
+					newListFormSubmitError = undefined;
 					break;
 
 				case 'failure':
 					if (result.status === 400) {
 						newListFormValidationErrors = result.data!.validationErrors;
-						newListFormSubmitError = '';
+						newListFormSubmitError = undefined;
 					} else {
 						newListFormValidationErrors = undefined;
 						newListFormSubmitError = 'An unexpected error occurred';
 					}
+					break;
+			}
+		};
+	};
+
+	// todo make a componenent for this its done in two places
+	function toastError(message: string) {
+		toastErrorMessage = message;
+		setTimeout(() => {
+			toastErrorMessage = undefined;
+		}, 1500);
+	}
+
+	const deleteListSubmit: DeleteSubmitFunction = () => {
+		return async ({ result }) => {
+			switch (result.type) {
+				case 'redirect':
+					toastErrorMessage = undefined;
+					if (result.location === $page.url.pathname) {
+						invalidateAll();
+					} else {
+						goto(result.location);
+					}
+					break;
+
+				case 'error':
+					toastError('An unexpected error occurred');
+					break;
+
+				case 'success':
+					toastErrorMessage = undefined;
+					break;
+
+				case 'failure':
+					toastError('An unexpected error occurred');
 					break;
 			}
 		};
@@ -61,9 +101,9 @@
 <main class="w-full flex flex-col justify-center items-center gap-4 p-4">
 	<div class="flex justify-center items-center gap-4">
 		<h1 class="text-3xl">My Lists</h1>
-		<button onclick={openNewListModal} class="btn btn-square"
-			><img alt="add grocery list" src={addSvg} /></button
-		>
+		<button onclick={openNewListModal} class="btn btn-square">
+			<img alt="add grocery list" src={addSvg} />
+		</button>
 	</div>
 
 	<ul class="space-y-4">
@@ -85,6 +125,15 @@
 						<a href={`/grocery-lists/${groceryList.id}`} class="btn btn-sm btn-square">
 							<img alt="edit grocery list" src={editSvg} />
 						</a>
+						<form
+							use:enhance={deleteListSubmit}
+							method="POST"
+							action={`/grocery-lists/${groceryList.id}?/delete`}
+						>
+							<button type="submit" class="btn btn-sm btn-square">
+								<img alt="delete grocery list" src={deleteSvg} />
+							</button>
+						</form>
 					</div>
 				</div>
 			</li>
@@ -100,7 +149,6 @@
 				{#if newListFormSubmitError}
 					<p class="text-sm text-error">{newListFormSubmitError}</p>
 				{/if}
-
 				{#if newListFormValidationErrors?.title}
 					<p class="text-sm text-error">Title {newListFormValidationErrors.title}</p>
 				{/if}
@@ -121,3 +169,11 @@
 		</div>
 	</div>
 </dialog>
+
+{#if toastErrorMessage}
+	<div class="toast" transition:fade={{ delay: 250, duration: 300 }}>
+		<div class="alert bg-error block">
+			<span>{toastErrorMessage}</span>
+		</div>
+	</div>
+{/if}
